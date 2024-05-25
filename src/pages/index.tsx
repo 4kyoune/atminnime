@@ -80,7 +80,7 @@ const Home = () => {
             {recentlyUpdatedLoading ? (
               <ListSwiperSkeleton />
             ) : (
-              <Section title="Recently Updated">
+              <Section title="New Update Anime">
                 <CardSwiper data={recentlyUpdated} />
               </Section>
             )}
@@ -90,7 +90,7 @@ const Home = () => {
             {popularAllTimeLoading ? (
               <ListSwiperSkeleton />
             ) : (
-              <Section title="Most Popular">
+              <Section title="Anime Popular">
                 <CardSwiper data={popularAllTime} />
               </Section>
             )}
@@ -98,7 +98,7 @@ const Home = () => {
             {favouriteAllTimeLoading ? (
               <ListSwiperSkeleton />
             ) : (
-              <Section title="Most Favourite">
+              <Section title="Paling Favorit">
                 <CardSwiper data={favouriteAllTime} />
               </Section>
             )}
@@ -110,7 +110,7 @@ const Home = () => {
               )}
             >
               <Section
-                title="Should Watch Today"
+                title="Harus Ditonton Hari Ini"
                 className="w-full md:w-[80%] md:!pr-0"
               >
                 {randomAnime && (
@@ -119,14 +119,14 @@ const Home = () => {
               </Section>
 
               <Section
-                title="Genres"
+                title="Genre"
                 className="w-full md:w-[20%] md:!pl-0"
               >
                 <GenreSwiper className="md:h-[500px]" />
               </Section>
             </div>
 
-            <Section title="Airing Schedule">
+            <Section title="Jadwal Tayang">
               <AnimeScheduling />
             </Section>
           </div>

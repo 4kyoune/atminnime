@@ -3,344 +3,39 @@ import Head from "@/components/shared/Head";
 import Section from "@/components/shared/Section";
 import Link from "next/link";
 
-//@ts-nocheck
-import { useGlobalPlayer } from "@/contexts/GlobalPlayerContext";
-import { parseNumberFromString } from "@/utils";
-import classNames from "classnames";
-import { ControlButton, TimeIndicator, useInteract } from "netplayer";
-import { useRouter } from "next/router";
-import React, { useMemo } from "react";
-import { AiOutlineClose, AiOutlineExpandAlt } from "react-icons/ai";
-import { BsArrowLeft } from "react-icons/bs";
-import Player, { PlayerProps } from "./Player";
-import Controls from "./Player/Controls";
-import EpisodesButton from "./Player/EpisodesButton";
-import LocaleEpisodeSelector from "./Player/LocaleEpisodeSelector";
-import MobileControls from "./Player/MobileControls";
-import MobileEpisodesButton from "./Player/MobileEpisodesButton";
-import MobileNextEpisode from "./Player/MobileNextEpisode";
-import MobileOverlay from "./Player/MobileOverlay";
-import NextEpisodeButton from "./Player/NextEpisodeButton";
-import Overlay from "./Player/Overlay";
-import ProgressSlider from "./Player/ProgressSlider";
-import TimestampSkipButton from "./Player/TimestampSkipButton";
+function ErrorPage() {
 
-export interface WatchPlayerProps extends PlayerProps {
-  videoRef?: React.ForwardedRef<HTMLVideoElement>;
-}
+  return (
+    <div className="relative w-full min-h-screen flex items-center">
+      <Head title="An error has occurred (404) - Exoexs" />
 
-const PlayerControls = React.memo(() => {
-  const {
-    playerProps: {
-      setEpisode,
-      episodes,
-      currentEpisodeIndex,
-      sourceId,
-      anime,
-      currentEpisode,
-    },
-    isBackground,
-  } = useGlobalPlayer();
-  const { isInteracting } = useInteract();
+      <div className="fixed z-0 w-full h-full flex items-center justify-center">
+        <h1 className="font-bold text-[30vw] text-gray-500">404</h1>
 
-  const sourceEpisodes = useMemo(
-    () => episodes.filter((episode) => episode.sourceId === sourceId),
-    [episodes, sourceId]
-  );
+        <div className="absolute inset-0 bg-black/90 w-full h-full"></div>
+      </div>
 
-  const nextEpisode = useMemo(
-    () => sourceEpisodes[currentEpisodeIndex + 1],
-    [currentEpisodeIndex, sourceEpisodes]
-  );
-
-  return !isBackground ? (
-    <Controls
-      rightControlsSlot={
-        <React.Fragment>
-          {currentEpisodeIndex < sourceEpisodes.length - 1 && (
-            <NextEpisodeButton onClick={() => setEpisode(nextEpisode)} />
-          )}
-
-          {anime?.id && (
-            <EpisodesButton>
-              <div className="w-[70vw] overflow-hidden bg-background-900 p-4">
-                <LocaleEpisodeSelector
-                  mediaId={anime.id}
-                  episodes={episodes}
-                  activeEpisode={currentEpisode}
-                  episodeLinkProps={{ shallow: true, replace: true }}
-                />
-              </div>
-            </EpisodesButton>
-          )}
-        </React.Fragment>
-      }
-    />
-  ) : (
-    <div className="space-y-2">
-      {isInteracting && (
-        <div className="px-4">
-          <TimeIndicator />
+      <Section className="relative z-10 flex flex-col items-center w-full h-full text-center ">
+        <div className="mb-4 text-gray-300">
+          <span className="text-lg">
+          Welcome to the 404 dimension
+          </span>
         </div>
-      )}
 
-      <ProgressSlider />
+        <p className="text-4xl font-semibold">You have discovered a new dimension</p>
+
+        <p className="text-2xl text-gray-200 mt-4">But unfortunately, this dimension has nothing at all</p>
+
+        <Link href="/">
+          <Button primary outline className="mt-8">
+            <p className="text-lg">Go back to the old dimension</p>
+          </Button>
+        </Link>
+      </Section>
     </div>
   );
-});
+}
 
-PlayerControls.displayName = "PlayerControls";
+ErrorPage.getLayout = (page: any) => page;
 
-const PlayerMobileControls = React.memo(() => {
-  const {
-    playerProps: {
-      setEpisode,
-      episodes,
-      currentEpisodeIndex,
-      sourceId,
-      anime,
-      currentEpisode,
-    },
-    isBackground,
-  } = useGlobalPlayer();
-
-  const sourceEpisodes = useMemo(
-    () => episodes.filter((episode) => episode.sourceId === sourceId),
-    [episodes, sourceId]
-  );
-
-  const nextEpisode = useMemo(
-    () => sourceEpisodes[currentEpisodeIndex + 1],
-    [currentEpisodeIndex, sourceEpisodes]
-  );
-
-  return !isBackground ? (
-    <MobileControls
-      controlsSlot={
-        <React.Fragment>
-          <MobileEpisodesButton>
-            {(isOpen, setIsOpen) =>
-              isOpen && (
-                <div
-                  className={classNames(
-                    "fixed inset-0 z-[9999] flex w-full flex-col justify-center bg-background px-2"
-                  )}
-                >
-                  <BsArrowLeft
-                    className="absolute left-3 top-3 h-8 w-8 cursor-pointer transition duration-300 hover:text-gray-200"
-                    onClick={() => setIsOpen(false)}
-                  />
-
-                  {anime?.id && (
-                    <div>
-                      <LocaleEpisodeSelector
-                        mediaId={anime.id}
-                        episodes={episodes}
-                        activeEpisode={currentEpisode}
-                        episodeLinkProps={{ shallow: true, replace: true }}
-                      />
-                    </div>
-                  )}
-                </div>
-              )
-            }
-          </MobileEpisodesButton>
-
-          {currentEpisodeIndex < sourceEpisodes.length - 1 && (
-            <MobileNextEpisode onClick={() => setEpisode(nextEpisode)} />
-          )}
-        </React.Fragment>
-      }
-    />
-  ) : null;
-});
-
-PlayerMobileControls.displayName = "PlayerMobileControls";
-
-const PlayerOverlay = React.memo(() => {
-  const router = useRouter();
-  const { isInteracting } = useInteract();
-  const {
-    playerProps: { currentEpisode, anime },
-    setPlayerState,
-  } = useGlobalPlayer();
-  const { isBackground } = useGlobalPlayer();
-
-  return (
-    <Overlay>
-      {isBackground ? (
-        <MobileOverlay>
-          <div className="flex items-center gap-2 absolute top-4 left-4">
-            <div className="w-8 h-8">
-              <ControlButton
-                className={classNames(
-                  isInteracting ? "visible opacity-100" : "invisible opacity-0"
-                )}
-                onClick={() =>
-                  router.push(
-                    `/anime/watch/${anime?.id}/${currentEpisode?.sourceId}/${currentEpisode.sourceEpisodeId}`
-                  )
-                }
-                tooltip="Expand"
-              >
-                <AiOutlineExpandAlt />
-              </ControlButton>
-            </div>
-            <div className="w-8 h-8">
-              <ControlButton
-                className={classNames(
-                  isInteracting ? "visible opacity-100" : "invisible opacity-0"
-                )}
-                onClick={() => setPlayerState(null)}
-                tooltip="Exit"
-              >
-                <AiOutlineClose />
-              </ControlButton>
-            </div>
-          </div>
-        </MobileOverlay>
-      ) : (
-        <React.Fragment>
-          <BsArrowLeft
-            className={classNames(
-              "transition-al absolute top-10 left-10 h-10 w-10 cursor-pointer duration-300 hover:text-gray-200",
-              isInteracting ? "visible opacity-100" : "invisible opacity-0"
-            )}
-            onClick={router.back}
-          />
-
-          {anime?.idMal && (
-            <TimestampSkipButton
-              className="absolute right-4 bottom-20"
-              episode={parseNumberFromString(currentEpisode.name)}
-              malId={anime.idMal}
-            />
-          )}
-        </React.Fragment>
-      )}
-    </Overlay>
-  );
-});
-
-PlayerOverlay.displayName = "PlayerOverlay";
-
-const PlayerMobileOverlay = React.memo(() => {
-  const router = useRouter();
-  const { isInteracting } = useInteract();
-  const {
-    playerProps: { currentEpisode, anime },
-    isBackground,
-    setPlayerState,
-  } = useGlobalPlayer();
-
-  return (
-    <React.Fragment>
-      <MobileOverlay>
-        {!isBackground && (
-          <BsArrowLeft
-            className={classNames(
-              "absolute top-4 left-4 h-8 w-8 cursor-pointer transition-all duration-300 hover:text-gray-200",
-              isInteracting ? "visible opacity-100" : "invisible opacity-0"
-            )}
-            onClick={router.back}
-          />
-        )}
-
-        {isBackground && (
-          <div className="flex items-center gap-2 absolute top-4 left-4">
-            <div className="w-8 h-8">
-              <ControlButton
-                className={classNames(
-                  isInteracting ? "visible opacity-100" : "invisible opacity-0"
-                )}
-                onClick={() =>
-                  router.push(
-                    `/anime/watch/${anime?.id}/${currentEpisode?.sourceId}/${currentEpisode.sourceEpisodeId}`
-                  )
-                }
-                tooltip="Expand"
-              >
-                <AiOutlineExpandAlt />
-              </ControlButton>
-            </div>
-            <div className="w-8 h-8">
-              <ControlButton
-                className={classNames(
-                  isInteracting ? "visible opacity-100" : "invisible opacity-0"
-                )}
-                onClick={() => setPlayerState(null)}
-                tooltip="Exit"
-              >
-                <AiOutlineClose />
-              </ControlButton>
-            </div>
-          </div>
-        )}
-      </MobileOverlay>
-
-      {anime?.idMal && (
-        <TimestampSkipButton
-          className="absolute right-4 bottom-24 z-50"
-          episode={parseNumberFromString(currentEpisode.name)}
-          malId={anime.idMal}
-        />
-      )}
-    </React.Fragment>
-  );
-});
-
-PlayerMobileOverlay.displayName = "PlayerMobileOverlay";
-
-const WatchPlayer: React.FC<WatchPlayerProps> = ({ videoRef, ...props }) => {
-  const {
-    playerProps: { episodes, currentEpisodeIndex, setEpisode, sourceId },
-  } = useGlobalPlayer();
-  const sourceEpisodes = useMemo(
-    () => episodes.filter((episode) => episode.sourceId === sourceId),
-    [episodes, sourceId]
-  );
-
-  const nextEpisode = useMemo(
-    () => sourceEpisodes[currentEpisodeIndex + 1],
-    [currentEpisodeIndex, sourceEpisodes]
-  );
-
-  const hotkeys = useMemo(
-    () => [
-      {
-        fn: () => {
-          if (currentEpisodeIndex < sourceEpisodes.length - 1) {
-            setEpisode(nextEpisode);
-          }
-        },
-        hotKey: "shift+n",
-        name: "next-episode",
-      },
-    ],
-    [currentEpisodeIndex, nextEpisode, setEpisode, sourceEpisodes.length]
-  );
-
-  const components = useMemo(
-    () => ({
-      Controls: PlayerControls,
-      MobileControls: PlayerMobileControls,
-      Overlay: PlayerOverlay,
-      MobileOverlay: PlayerMobileOverlay,
-    }),
-    []
-  );
-
-  return (
-    <Player
-      ref={videoRef}
-      components={components}
-      hotkeys={hotkeys}
-      autoPlay
-      {...props}
-    />
-  );
-};
-
-WatchPlayer.displayName = "WatchPlayer";
-
-export default React.memo(WatchPlayer);
+export default ErrorPage;

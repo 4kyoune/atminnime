@@ -3,8 +3,7 @@ import Head from "@/components/shared/Head";
 import Section from "@/components/shared/Section";
 import Link from "next/link";
 
-return (
-  import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAnimeDetails, getAnimeNews, getEpisodeDetails, getOngoingAnime } from "../../Hooks/Api";
 import IframeVideo from "../../components/fragments/IframeVideo/IframeVideo";

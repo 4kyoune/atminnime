@@ -384,7 +384,7 @@ export default withRedirect(DetailsPage, (router, props) => {
   if (slug) return null;
 
   return {
-    url: `/anime/details/${id}/${title}`,
+    url: `/contexts/WatchContext.tsx`,
     options: {
       shallow: true,
     },
